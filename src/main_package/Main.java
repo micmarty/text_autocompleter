@@ -22,19 +22,26 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         
+        //preparation before showing window content
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Interface.fxml"));
         Parent root = loader.load();
         
         Scene scene = new Scene(root);
-        InterfaceController ic = (InterfaceController) loader.getController();
-        ic.setScene(scene);
-        ic.setShortcutListener();
+        InterfaceController interfaceController = (InterfaceController) loader.getController();
+        
+        //pass important references to interface controller
+        interfaceController.setScene(scene);
+        interfaceController.setShortcutListener();
+        
         
         stage.setScene(scene);
         stage.show();
+        DataBaseConnector dataBaseConnector = new DataBaseConnector("WordMagazine", "miczi", "`123`123");
         
-        InputFileParser parser = new InputFileParser();
-        parser.connectToDatabase("miczi", "`123`123");
+        //call parser actions
+        InputFileParser parser = new InputFileParser(dataBaseConnector.connection);
+        interfaceController.setConnectionReference(dataBaseConnector.connection);
+        
         parser.readFile("S:\\book.txt");
     }
 

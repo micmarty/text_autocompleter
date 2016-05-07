@@ -25,32 +25,12 @@ import java.util.regex.Pattern;
  * @author Michał Martyniak
  */
 public class InputFileParser {
-    
-    private Connection con;
-    
-    /*  establishes connection to a database  */
-    //TODO add in-code automatic DB tables creating(not manually in netbeans -> wrong way)
-    public void connectToDatabase(String username, String password) {
-        //load a driver
-        try{ 
-            Class.forName("org.apache.derby.jdbc.ClientDriver");
-        }catch(ClassNotFoundException e){
-            System.err.println("Driver loading problem. Go to project properties and add library JAVA DB to solve this problem");
-        }
-        
-        //try to connect
-        try{
-            con = DriverManager.getConnection("jdbc:derby://localhost:1527/WordMagazine", username, password);
-            
-            //Initially, always delete all DB records
-            Statement stmt = con.createStatement();
-            String sql = "DELETE FROM MICZI.WORD_PAIRS WHERE OCCURENCES_COUNTER>=1";
-            stmt.executeUpdate(sql);
-        }catch(SQLException e){
-            System.err.println("Connection refused or records deletion failed!");
-        }    
-      }
+    private Connection connetion;
 
+    public InputFileParser(Connection connetion) {
+        this.connetion = connetion;
+    }
+    
     /*  
         loads file from given path, remove symbols defined in patter/regular expression
         then insert words into DB
@@ -77,7 +57,7 @@ public class InputFileParser {
                       + " VALUES (?, ?, ?)";
 
                     // create the mysql insert preparedstatement
-                    PreparedStatement preparedStmt = con.prepareStatement(query);
+                    PreparedStatement preparedStmt = connetion.prepareStatement(query);
                     preparedStmt.setString (1, wordsInLine[0]);
                     preparedStmt.setString (2, wordsInLine[1]);
                     preparedStmt.setInt(3, 1);
