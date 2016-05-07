@@ -63,7 +63,7 @@ public class InterfaceController implements Initializable {
         inputTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             System.out.println(oldValue + " -> " + newValue);
         });
-        
+
         //CTRL+SPACE Listener
         sceneReference.getAccelerators().put(
                 new KeyCodeCombination(KeyCode.SPACE, KeyCombination.CONTROL_ANY),
@@ -78,34 +78,56 @@ public class InterfaceController implements Initializable {
         }
         );
     }
-
-    private void handleTextChange() {
-
+    
+    /*  Make query statement, execute it and get execution results    */
+    private ResultSet findSuggestions(){
+        ResultSet results = null;
         try {
-            //Make query statement, execute it and get execution results
             String findSecWordQuery = "SELECT DISTINCT SEC_WORD FROM MICZI.WORD_PAIRS WHERE FIRST_WORD = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(findSecWordQuery);
             preparedStatement.setString(1, inputTextField.getText());
-            ResultSet results = preparedStatement.executeQuery();
+            results = preparedStatement.executeQuery();
             
-            
-            suggestions.clear();            //list must be always empty at the beginning!
-            while (results.next()) {        //populate observable list with query result elements
-                
-                suggestions.add(results.getString("SEC_WORD"));
-            }
-            
-            //fill combobox with observable list (query results)
-            suggestionsComboBox.setItems(suggestions);
-            suggestionsComboBox.getSelectionModel().selectFirst();
-            suggestionsComboBox.show();
-
             //close query
             results.close();
             preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(InterfaceController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return results;
     }
+    
+    /*  helper method - populates observable list with query result elements    */
+    private void populateListWithQueryResults(ResultSet results) {
+        try {
+            while (results.next()) {        
+                suggestions.add(results.getString("SEC_WORD"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(InterfaceController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    /*  
+        Reacts to shortcut and input
+        for example: finds second word suggestion(as query)
+        then makes list from query results
+        finally populates comboBox
+        in other words it makes a lot even if it's small(it uses helper methods)    
+    */
+    private void handleTextChange() {
+        //IMPORTANT -> read methods descriptions
+        ResultSet results = findSuggestions();
+        suggestions.clear();        //list must be always empty at the beginning!
+        populateListWithQueryResults(results);
+
+        //fill combobox with observable list (query results)
+        suggestionsComboBox.setItems(suggestions);
+        suggestionsComboBox.getSelectionModel().selectFirst();
+        suggestionsComboBox.show();
+    }
+
+    
 
 }
