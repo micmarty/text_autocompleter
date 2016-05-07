@@ -15,8 +15,11 @@ import java.sql.Statement;
  * @author Michał Martyniak
  */
 public class DataBaseConnector {
+    //should be visible to other classes, but readonly
     public final Connection connection;
 
+    
+    
     /*  establishes connection to a database with given parameters  */
     //TODO add in-code automatic DB tables creating(not manually in netbeans -> wrong way)
     public DataBaseConnector(String DBName, String userName, String password) {

@@ -34,6 +34,9 @@ public class Main extends Application {
         interfaceController.setShortcutListener();
         
         
+        
+
+        
         stage.setScene(scene);
         stage.show();
         DataBaseConnector dataBaseConnector = new DataBaseConnector("WordMagazine", "miczi", "`123`123");
