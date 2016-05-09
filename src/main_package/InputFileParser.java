@@ -51,20 +51,23 @@ public class InputFileParser {
                 
                 String[] wordsInLine = currentLine.split(" ");
                 
-                if(wordsInLine.length >= 2){
+                for(int word = 0; word < wordsInLine.length-1; word++){
                     // the mysql insert statement
                     String query = "INSERT INTO MICZI.WORD_PAIRS (FIRST_WORD, SEC_WORD, OCCURENCES_COUNTER)"
                       + " VALUES (?, ?, ?)";
 
                     // create the mysql insert preparedstatement
                     PreparedStatement preparedStmt = connetion.prepareStatement(query);
-                    preparedStmt.setString (1, wordsInLine[0]);
-                    preparedStmt.setString (2, wordsInLine[1]);
+                    preparedStmt.setString (1, wordsInLine[word]);
+                    preparedStmt.setString (2, wordsInLine[word+1]);
                     preparedStmt.setInt(3, 1);
 
                     // execute the prepared statement
                     preparedStmt.execute();
                 }
+                //if(wordsInLine.length >= 2){
+                    
+                //}
             }
                 
         }catch(FileNotFoundException e){

@@ -17,6 +17,8 @@ import java.sql.Statement;
 public class DataBaseConnector {
     //should be visible to other classes, but readonly
     public final Connection connection;
+    public static final String DBName = "MICZI";
+    public static final String TableName = "WORD_PAIRS";
 
     
     
@@ -34,7 +36,7 @@ public class DataBaseConnector {
             
             //Initially, always delete all DB records
             Statement stmt = _connection.createStatement();
-            String sql = "DELETE FROM MICZI.WORD_PAIRS WHERE OCCURENCES_COUNTER>=1";
+            String sql = "DELETE FROM "+DBName+"."+TableName+" WHERE OCCURENCES_COUNTER>=1";
             stmt.executeUpdate(sql);
         }catch(SQLException e){
             System.err.println("Connection refused or records deletion failed!");
