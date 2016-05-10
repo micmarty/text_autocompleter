@@ -60,9 +60,8 @@ public class InterfaceController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        inputTextField.setPromptText("Type some text here...");
-        suggestionsComboBox.setVisible(false);
-        originalText = new String();
+        suggestionsComboBox.setVisible(false);  //we want to hide suggestions list at this stage
+        originalText = new String();            //initialize input with empty string
     }
 
     void setScene(Scene scene) {
@@ -87,7 +86,7 @@ public class InterfaceController implements Initializable {
             public void run() {
                 //actions performed on shortcut detection
                 inputTextField.requestFocus();
-                System.out.println("Rozpoznano kombinację ctrl+space dla textu: \"" + inputTextField.getText() + "\"");
+                System.out.println("Rozpoznano kombinację ctrl+space dla textu: \"" + getLastWordFromInput() + "\"");
                 originalText = inputTextField.getText();
                 handleTextChange();
             }
@@ -97,12 +96,23 @@ public class InterfaceController implements Initializable {
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 if(lastSuggested == LastSuggestion.SECOND_WORD)
                     inputTextField.setText(originalText + " " + newValue);
-                else if(lastSuggested == LastSuggestion.WORD_ITSELF)
-                    inputTextField.setText((String)newValue);
+                else if(lastSuggested == LastSuggestion.WORD_ITSELF){
+                    String sentence = originalText.substring(0, originalText.length() - getLastWordFromInput().length());
+                    //need some modifications here LATER!!!!
+                    inputTextField.setText(sentence + (String)newValue);
+                }
+                    
             }
         });
     }
     
+    /*
+        thanks to that, we can separate last word from whole input(all of the words), 
+        and use only the last one to find suggestions suitable for it.
+    */
+    private String getLastWordFromInput(){
+        return inputTextField.getText().substring(inputTextField.getText().lastIndexOf(" ")+1);
+    }
     
     /* 
         executes query:
@@ -122,7 +132,8 @@ public class InterfaceController implements Initializable {
         //try execute query on database and assign resultset to a variable
         try {
             preparedStatement = con.prepareStatement(query);
-            preparedStatement.setString(1, inputTextField.getText());//place string into first ? sign above ^
+            System.out.println(getLastWordFromInput());
+            preparedStatement.setString(1, getLastWordFromInput());//place string into first ? sign above ^
             results = preparedStatement.executeQuery();
         } catch (SQLException ex) {
             Logger.getLogger(InterfaceController.class.getName()).log(Level.SEVERE, null, ex);
@@ -154,7 +165,7 @@ public class InterfaceController implements Initializable {
         //try execute query on database and assign resultset to a variable
         try {
             preparedStatement = con.prepareStatement(query);
-            preparedStatement.setString(1, inputTextField.getText() + "%");//word% - regex expression
+            preparedStatement.setString(1, getLastWordFromInput() + "%");//word% - regex expression
             results = preparedStatement.executeQuery();
         } catch (SQLException ex) {
             Logger.getLogger(InterfaceController.class.getName()).log(Level.SEVERE, null, ex);
@@ -194,6 +205,8 @@ public class InterfaceController implements Initializable {
     /*  helper method - populates observable list with query result elements    */
     private void populateListWithQueryResults(ResultSet results) {
         try {
+            if(lastSuggested == LastSuggestion.SECOND_WORD)
+                suggestions.add("");
             while (results.next()) {   
                 if(lastSuggested == LastSuggestion.SECOND_WORD)
                     suggestions.add(results.getString("SEC_WORD"));

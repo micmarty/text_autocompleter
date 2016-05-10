@@ -42,8 +42,8 @@ public class InputFileParser {
         {
             String currentLine;
             while((currentLine = br.readLine())!=null){
-                System.out.print(currentLine + "\t");
-                Pattern p = Pattern.compile("(\\,|\\.|\\?|\\!)");
+                System.out.print(currentLine + "\t\t");
+                Pattern p = Pattern.compile("[^a-zA-ZąęćżźńłóśĄĘĆŻŹŃŁÓŚé\\s]");
                 
                 currentLine = p.matcher(currentLine).replaceAll("");
                 System.out.println(currentLine);
