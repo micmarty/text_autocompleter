@@ -10,11 +10,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-/**
- *
- * @author Michał Martyniak
- */
+
 public class DataBaseConnector {
+    
     //should be visible to other classes, but readonly
     public final Connection connection;
     public static final String DBName = "MICZI";

@@ -15,6 +15,8 @@ import java.sql.Statement;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -26,6 +28,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -46,7 +49,7 @@ public class InterfaceController implements Initializable {
     private String originalText;
     
     @FXML
-    private ComboBox<String> suggestionsComboBox;
+    private ListView<String> suggestionsList;
     private ObservableList<String> suggestions = FXCollections.observableArrayList();
 
     private Scene sceneReference;
@@ -60,7 +63,7 @@ public class InterfaceController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        suggestionsComboBox.setVisible(false);  //we want to hide suggestions list at this stage
+        suggestionsList.setVisible(false);      //we want to hide suggestions list at this stage
         originalText = new String();            //initialize input with empty string
     }
 
@@ -89,22 +92,50 @@ public class InterfaceController implements Initializable {
                 System.out.println("Rozpoznano kombinację ctrl+space dla textu: \"" + getLastWordFromInput() + "\"");
                 originalText = inputTextField.getText();
                 handleTextChange();
+                
             }
         });
-        suggestionsComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                if(lastSuggested == LastSuggestion.SECOND_WORD)
-                    inputTextField.setText(originalText + " " + newValue);
-                else if(lastSuggested == LastSuggestion.WORD_ITSELF){
+//        suggestionsComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+//                int cursorPosition_backUp = inputTextField.getCaretPosition();
+//                if(lastSuggested == LastSuggestion.SECOND_WORD)
+//                    inputTextField.setText(originalText + " " + newValue);
+//                else if(lastSuggested == LastSuggestion.WORD_ITSELF){
+//                    String sentence = originalText.substring(0, originalText.length() - getLastWordFromInput().length());
+//                    //need some modifications here LATER!!!!
+//                    inputTextField.setText(sentence + (String)newValue);
+//                }
+//                inputTextField.positionCaret(cursorPosition_backUp);
+//            }
+//        });
+        
+        suggestionsList.setOnKeyPressed((e) -> {
+            if(e.getCode() == KeyCode.ENTER){
+                System.out.println("Wcisnieto ENTER");
+                
+                //useful local variables
+                ListView<String> s = (ListView)e.getSource();
+                String selectedSuggestion = s.getSelectionModel().getSelectedItem();
+                int initialCursorPosition = inputTextField.getCaretPosition();
+                
+                //if(lastSuggested == LastSuggestion.SECOND_WORD)
+                    //inputTextField.setText(originalText + " " + newValue);
+                if(lastSuggested == LastSuggestion.WORD_ITSELF){
+                    //get whole content to the left and save it
                     String sentence = originalText.substring(0, originalText.length() - getLastWordFromInput().length());
-                    //need some modifications here LATER!!!!
-                    inputTextField.setText(sentence + (String)newValue);
+                    inputTextField.setText(sentence + selectedSuggestion);
                 }
-                    
+                inputTextField.requestFocus();
+                inputTextField.selectPreviousWord();
+                inputTextField.positionCaret(initialCursorPosition);
+                
             }
         });
+        
     }
+
+   
     
     /*
         thanks to that, we can separate last word from whole input(all of the words), 
@@ -228,16 +259,28 @@ public class InterfaceController implements Initializable {
     */
     private void handleTextChange() {
         //IMPORTANT -> read methods descriptions
+        
+        inputTextField.selectPreviousWord();
+        inputTextField.deselect();
+        inputTextField.selectEndOfNextWord();
+        
+        
+        
+        
+        
+        
         ResultSet results = findSuggestions();
         suggestions.clear();        //list must be always empty at the beginning!
         populateListWithQueryResults(results);
-
-        //fill combobox with observable list (query results)
-        suggestionsComboBox.setVisible(true);
         
-        suggestionsComboBox.setItems(suggestions);
-        suggestionsComboBox.getSelectionModel().selectFirst();
-        suggestionsComboBox.show();
+        suggestionsList.setItems(suggestions);//populate listView with query results
+        suggestionsList.getSelectionModel().selectFirst();
+        suggestionsList.setVisible(true);   //we need to see suggestions
+        
+        //set focus on list, so that user can instantly select suggestion
+//        Platform.runLater(() -> {
+//            suggestionsList.requestFocus();
+//        });
     }
 
    

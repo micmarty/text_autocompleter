@@ -9,7 +9,7 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main_package.InterfaceController">
    <children>
       <TextField fx:id="inputTextField" layoutX="42.0" layoutY="14.0" prefHeight="25.0" prefWidth="513.0" promptText="Type some text here..." />
-      <ComboBox fx:id="suggestionsComboBox" layoutX="44.0" layoutY="39.0" prefHeight="25.0" prefWidth="510.0" visibleRowCount="5" />
+      <ListView fx:id="suggestionsList" layoutX="44.0" layoutY="39.0" prefHeight="100.0" prefWidth="510.0"/>
       
    </children>
 </AnchorPane>
