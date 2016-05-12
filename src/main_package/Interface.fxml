@@ -9,7 +9,9 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main_package.InterfaceController">
    <children>
       <TextField fx:id="inputTextField" layoutX="42.0" layoutY="14.0" prefHeight="25.0" prefWidth="513.0" promptText="Type some text here..." />
-      <ListView fx:id="suggestionsList" layoutX="44.0" layoutY="39.0" prefHeight="100.0" prefWidth="510.0"/>
+      <ListView fx:id="suggestionsList" layoutX="42.0" layoutY="45.0" prefHeight="117.0" prefWidth="513.0" style="-fx-background-color: lightblue;" />
+      <Label layoutX="88.0" layoutY="189.0" text="Press Ctrl + R, to see rhyme suggestions for selected word" />
+      <ListView fx:id="rhymesList" layoutX="195.0" layoutY="222.0" prefHeight="145.0" prefWidth="200.0" style="-fx-background-color: lightblue;" />
       
    </children>
 </AnchorPane>
