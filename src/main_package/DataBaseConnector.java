@@ -22,7 +22,7 @@ public class DataBaseConnector {
     
     /*  establishes connection to a database with given parameters  */
     //TODO add in-code automatic DB tables creating(not manually in netbeans -> wrong way)
-    public DataBaseConnector(String DBName, String userName, String password) {
+    public DataBaseConnector(String dbName, String userName, String password) {
         Connection _connection = null; //local variable
         
         try{ 
@@ -30,11 +30,11 @@ public class DataBaseConnector {
             Class.forName("org.apache.derby.jdbc.ClientDriver");
         
             //try to connect with creditentials
-            _connection = DriverManager.getConnection("jdbc:derby://localhost:1527/" + DBName, userName, password);
+            _connection = DriverManager.getConnection("jdbc:derby://localhost:1527/" + dbName, userName, password);
             
             //Initially, always delete all DB records
             Statement stmt = _connection.createStatement();
-            String sql = "DELETE FROM "+DBName+"."+TableName+" WHERE OCCURENCES_COUNTER>=1";
+            String sql = "DELETE FROM "+DBName+"."+TableName;
             stmt.executeUpdate(sql);
         }catch(SQLException e){
             System.err.println("Connection refused or records deletion failed!");

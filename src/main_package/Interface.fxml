@@ -1,17 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main_package.InterfaceController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="698.0" prefWidth="600.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main_package.InterfaceController">
    <children>
       <TextField fx:id="inputTextField" layoutX="42.0" layoutY="14.0" prefHeight="25.0" prefWidth="513.0" promptText="Type some text here..." />
       <ListView fx:id="suggestionsList" layoutX="42.0" layoutY="45.0" prefHeight="117.0" prefWidth="513.0" style="-fx-background-color: lightblue;" />
-      <Label layoutX="88.0" layoutY="189.0" text="Press Ctrl + R, to see rhyme suggestions for selected word" />
+      <Label layoutX="88.0" layoutY="189.0" text="Press Ctrl + R, to see rhyme suggestions for selected word">
+         <font>
+            <Font name="Verdana" size="12.0" />
+         </font></Label>
       <ListView fx:id="rhymesList" layoutX="195.0" layoutY="222.0" prefHeight="145.0" prefWidth="200.0" style="-fx-background-color: lightblue;" />
+      <Button fx:id="chooseSourceFilesButton" layoutX="42.0" layoutY="392.0" mnemonicParsing="false" onAction="#chooseSourceFiles" prefHeight="43.0" prefWidth="196.0" text="Populate database with dictionary">
+         <font>
+            <Font name="Verdana" size="10.0" />
+         </font>
+      </Button>
+      <Hyperlink layoutX="267.0" layoutY="603.0" prefHeight="27.0" prefWidth="322.0" text="https://github.com/micmarty/text_autocompleter">
+         <font>
+            <Font name="Verdana" size="12.0" />
+         </font>
+      </Hyperlink>
+      <Label layoutX="270.0" layoutY="586.0" prefHeight="17.0" prefWidth="263.0" text="source code available at:">
+         <font>
+            <Font name="Verdana" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="270.0" layoutY="451.0" text="Words in database:" />
+      <Label fx:id="wordsAvailible" layoutX="395.0" layoutY="451.0" text="Label" />
+      <ListView fx:id="choosenSources" layoutX="42.0" layoutY="450.0" prefHeight="216.0" prefWidth="200.0" />
       
    </children>
 </AnchorPane>

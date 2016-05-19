@@ -26,10 +26,32 @@ import java.util.regex.Pattern;
  */
 public class InputFileParser {
     private Connection connetion;
-
+    private String[] wordsInLine;
+    
     public InputFileParser(Connection connetion) {
         this.connetion = connetion;
     }
+    
+    
+    private void insertWordPairIntoDB(String word1, String word2){
+        try {
+            // the mysql insert statement
+            String query = "INSERT INTO MICZI.WORD_PAIRS (FIRST_WORD, SEC_WORD)"
+                    + " VALUES (?, ?)";
+            
+            // create the mysql insert preparedstatement
+            PreparedStatement preparedStmt = connetion.prepareStatement(query);
+            preparedStmt.setString (1, word1);
+            preparedStmt.setString (2, word2);
+            
+            // execute the prepared statement
+            preparedStmt.execute();
+        } catch (SQLException ex) {
+            if(ex.getSQLState().equals(ex))
+            Logger.getLogger(InputFileParser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     
     /*  
         loads file from given path, remove symbols defined in patter/regular expression
@@ -41,40 +63,23 @@ public class InputFileParser {
         try(BufferedReader br = new BufferedReader(new FileReader(pathToFile)))
         {
             String currentLine;
-            while((currentLine = br.readLine())!=null){
-                System.out.print(currentLine + "\t\t");
+            while((currentLine = br.readLine()) != null){
+                
+                System.out.print(currentLine + "\t\t");//print line before
                 Pattern p = Pattern.compile("[^a-zA-ZąęćżźńłóśĄĘĆŻŹŃŁÓŚé\\s]");
+                currentLine = p.matcher(currentLine).replaceAll("");//delete symbols that doesnt match regex
+                System.out.println(currentLine);//print line after regex filtering
                 
-                currentLine = p.matcher(currentLine).replaceAll("");
-                System.out.println(currentLine);
-                
-                
-                String[] wordsInLine = currentLine.split(" ");
-                
+                wordsInLine = currentLine.split(" "); //divide one line into separate words and put them into an array
                 for(int word = 0; word < wordsInLine.length-1; word++){
-                    // the mysql insert statement
-                    String query = "INSERT INTO MICZI.WORD_PAIRS (FIRST_WORD, SEC_WORD, OCCURENCES_COUNTER)"
-                      + " VALUES (?, ?, ?)";
-
-                    // create the mysql insert preparedstatement
-                    PreparedStatement preparedStmt = connetion.prepareStatement(query);
-                    preparedStmt.setString (1, wordsInLine[word]);
-                    preparedStmt.setString (2, wordsInLine[word+1]);
-                    preparedStmt.setInt(3, 1);
-
-                    // execute the prepared statement
-                    preparedStmt.execute();
+                    insertWordPairIntoDB(wordsInLine[word], wordsInLine[word+1]);//insert one by one: word, it's right neighboor
                 }
-                //if(wordsInLine.length >= 2){
-                    
-                //}
+                
             }
                 
         }catch(FileNotFoundException e){
             System.err.println("File not found!");
         } catch (IOException ex) {
-            Logger.getLogger(InputFileParser.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
             Logger.getLogger(InputFileParser.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

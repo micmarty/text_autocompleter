@@ -30,7 +30,8 @@ public class Main extends Application {
         InterfaceController interfaceController = (InterfaceController) loader.getController();
         
         //pass important references to interface controller
-        interfaceController.setScene(scene);
+        interfaceController.setSceneReference(scene);
+        interfaceController.setStageReference(stage);
         interfaceController.setShortcutListener();
         
         
@@ -45,7 +46,7 @@ public class Main extends Application {
         InputFileParser parser = new InputFileParser(dataBaseConnector.connection);
         interfaceController.setConnectionReference(dataBaseConnector.connection);
         
-        parser.readFile("S:\\book.txt");
+        parser.readFile("S:\\sec_book.txt");
     }
 
     /**
